@@ -22,9 +22,19 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.x'
+      
+      - name: Clean workspace
+        run: dotnet clean --configuration Release
+
+      - name: Delete obj and bin folders
+        run: |
+          rm -rf obj bin
+
+      - name: Restore dependencies
+        run: dotnet restore
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release --no-restore
 
       - name: dotnet publish
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp"
