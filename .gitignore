@@ -1,0 +1,69 @@
+# Visual Studio & Rider
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln.cache
+*.sln.ide
+*.sw?
+
+# Build outputs
+bin/
+obj/
+out/
+Debug/
+Release/
+
+# User settings
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Logs
+*.log
+logs/
+logs/**
+
+# Packages & Dependencies
+packages/
+node_modules/
+!packages/repositories.config
+
+# Generated files
+*.dll
+*.pdb
+*.exe
+*.so
+*.dylib
+*.db
+*.lock
+*.pid
+*.log
+
+# Config & Secrets
+secrets.json
+appsettings.json
+appsettings.Development.json
+*.config
+*.key
+*.pem
+*.crt
+
+# Entity Framework Migrations
+Migrations/
+
+# Swagger docs
+swagger/
+swagger-ui/
+
+# Docker & Kubernetes
+.dockerignore
+Dockerfile
+*.container
+.kube/
+
+# lib
+wwwroot/lib/*
+
