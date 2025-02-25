@@ -27,8 +27,8 @@ jobs:
         run: dotnet clean --configuration Release
 
       - name: Delete obj and bin folders
-        run: |
-          rm -rf obj bin
+        run: Remove-Item -Recurse -Force obj, bin
+        shell: pwsh
 
       - name: Restore dependencies
         run: dotnet restore
