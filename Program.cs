@@ -5,15 +5,10 @@ using Antivirus.Services;
 using System.Text;
 using Antivirus.Models;
 using Antivirus.Repositories;
-using AutoMapper;
 using Antivirus.Mappers;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 

@@ -1,71 +1,139 @@
-using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
-using FluentAssertions;
-using System.Net.Http.Json;
-using Antivirus.Dtos;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
-using Antivirus.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System;
+using System.Threading.Tasks;
+using Antivirus.Controllers;
+using Antivirus.Services;
+using Antivirus.Dtos;
+using FluentAssertions;
 
-public class InstitucionControllerTests : IClassFixture<TestProgram>
+namespace Antivirus.Tests
 {
-    private readonly HttpClient _client;
-    private readonly IServiceScope _scope;
-    private readonly ApplicationDbContext _dbContext;
-
-    public InstitucionControllerTests(TestProgram factory)
+    public class InstitucionControllerTests
     {
-        _client = factory.CreateClient();
-        _scope = factory.Services.CreateScope();
-        _dbContext = _scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        private readonly Mock<IInstitucionService> _serviceMock;
+        private readonly InstitucionController _controller;
 
-        SeedDatabase().Wait(); // Asegura que los datos de prueba están listos antes de ejecutar las pruebas
-        AuthenticateClient().Wait(); // Obtiene el token y lo asigna a las solicitudes
-    }
+        public InstitucionControllerTests()
+        {
+            _serviceMock = new Mock<IInstitucionService>();
+            _controller = new InstitucionController(_serviceMock.Object);
+        }
 
-    private async Task AuthenticateClient()
-    {
-        var loginData = new { Email = "admin@test.com", Password = "password123" }; // Ajusta con credenciales válidas
-        var loginResponse = await _client.PostAsJsonAsync("/login", loginData);
+        [Fact]
+        public async Task GetAll_ShouldReturnOk_WhenDataExists()
+        {
+            // Arrange
+            var instituciones = new List<InstitucionDto> { new InstitucionDto { Id = 1, Nombre = "Test Institucion" } };
+            _serviceMock.Setup(s => s.GetAllAsync()).ReturnsAsync(instituciones);
 
-        loginResponse.EnsureSuccessStatusCode(); // Verifica que el login fue exitoso
+            // Act
+            var result = await _controller.GetAll();
 
-        var authResult = await loginResponse.Content.ReadFromJsonAsync<String>();
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authResult.Token);
-    }
+            // Assert
+            result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeEquivalentTo(instituciones);
+        }
 
-    private async Task SeedDatabase()
-    {
-        _dbContext.Instituciones.Add(new Institucion { Nombre = "Prueba 1", Ubicacion = "Ubicación 1", Url = "http://prueba.com" });
-        _dbContext.Instituciones.Add(new Institucion { Nombre = "Prueba 2", Ubicacion = "Ubicación 2", Url = "http://prueba2.com" });
-        await _dbContext.SaveChangesAsync();
-    }
+        [Fact]
+        public async Task GetById_ShouldReturnOk_WhenInstitucionExists()
+        {
+            // Arrange
+            var institucion = new InstitucionDto { Id = 1, Nombre = "Test Institucion" };
+            _serviceMock.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(institucion);
 
-    [Fact]
-    public async Task GetAllInstituciones_ShouldReturnSuccess()
-    {
-        var response = await _client.GetAsync("/api/institucion");
-        response.EnsureSuccessStatusCode();
-        var instituciones = await response.Content.ReadFromJsonAsync<List<InstitucionDto>>();
-        instituciones.Should().NotBeNull();
-        instituciones.Should().HaveCount(2);
-    }
+            // Act
+            var result = await _controller.GetById(1);
 
-    [Fact]
-    public async Task CreateInstitucion_ShouldReturnCreated()
-    {
-        var nuevaInstitucion = new InstitucionDto { Nombre = "Nueva", Ubicacion = "Ciudad", Url = "http://test.com" };
-        var response = await _client.PostAsJsonAsync("/api/institucion", nuevaInstitucion);
-        response.StatusCode.Should().Be(System.Net.HttpStatusCode.Created);
+            // Assert
+            result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeEquivalentTo(institucion);
+        }
 
-        var instituciones = await _dbContext.Instituciones.ToListAsync();
-        instituciones.Should().HaveCount(3);
+        [Fact]
+        public async Task GetById_ShouldReturnNotFound_WhenInstitucionDoesNotExist()
+        {
+            // Arrange
+            _serviceMock.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(default(InstitucionDto));
+
+
+            // Act
+            var result = await _controller.GetById(1);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async Task Create_ShouldReturnCreatedAtAction_WhenValidInstitucion()
+        {
+            // Arrange
+            var institucionDto = new InstitucionDto { Nombre = "Nueva Institución" };
+            var createdInstitucion = new InstitucionDto { Id = 1, Nombre = "Nueva Institución" };
+
+            _serviceMock.Setup(s => s.AddAsync(institucionDto)).ReturnsAsync(createdInstitucion);
+
+            // Act
+            var result = await _controller.Create(institucionDto);
+
+            // Assert
+            var createdResult = result.Should().BeOfType<CreatedAtActionResult>().Subject;
+            createdResult.ActionName.Should().Be(nameof(InstitucionController.GetById));
+            createdResult.Value.Should().BeEquivalentTo(createdInstitucion);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnOk_WhenUpdateIsSuccessful()
+        {
+            // Arrange
+            var institucionDto = new InstitucionDto { Id = 1, Nombre = "Updated Institucion" };
+            _serviceMock.Setup(s => s.UpdateAsync(1, institucionDto)).ReturnsAsync(institucionDto);
+
+            // Act
+            var result = await _controller.Update(1, institucionDto);
+
+            // Assert
+            result.Should().BeOfType<OkObjectResult>().Which.Value.Should().BeEquivalentTo(institucionDto);
+        }
+
+        [Fact]
+        public async Task Update_ShouldReturnNotFound_WhenInstitucionDoesNotExist()
+        {
+            // Arrange
+            var institucionDto = new InstitucionDto { Id = 1, Nombre = "Updated Institucion" };
+            _serviceMock.Setup(s => s.UpdateAsync(1, institucionDto)).ReturnsAsync(default(InstitucionDto));
+
+
+            // Act
+            var result = await _controller.Update(1, institucionDto);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
+
+        [Fact]
+        public async Task Delete_ShouldReturnNoContent_WhenDeletionIsSuccessful()
+        {
+            // Arrange
+            _serviceMock.Setup(s => s.DeleteAsync(1)).ReturnsAsync(true);
+
+            // Act
+            var result = await _controller.Delete(1);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        public async Task Delete_ShouldReturnNotFound_WhenInstitucionDoesNotExist()
+        {
+            // Arrange
+            _serviceMock.Setup(s => s.DeleteAsync(1)).ReturnsAsync(false);
+
+            // Act
+            var result = await _controller.Delete(1);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+        }
     }
 }
-
