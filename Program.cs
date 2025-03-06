@@ -13,8 +13,6 @@ using Microsoft.OpenApi.Models;
 using System;
 
 
-
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Configurar autenticación JWT
@@ -74,15 +72,35 @@ builder.Services.AddSwaggerGen(c =>
 // Registrar los servicios 
 builder.Services.AddScoped<AuthService>();
 
-//Institucion
+// Institucion
 builder.Services.AddScoped<IInstitucionRepository, InstitucionRepository>();
 builder.Services.AddScoped<IInstitucionService, InstitucionService>();
 
+// Oportunidades
+builder.Services.AddScoped<IOportunidadRepository, OportunidadRepository>();
+builder.Services.AddScoped<IOportunidadService, OportunidadService>();
+
+// Tipos de Oportunidades
+builder.Services.AddScoped<ITipoOportunidadRepository, TipoOportunidadRepository>();
+builder.Services.AddScoped<ITipoOportunidadService, TipoOportunidadService>();
 
 
 // Configurar EF Core con PostgreSQL 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Habilitar los CORS desde el frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173") // Permitir solo este frontend
+                  .AllowAnyMethod() // Permitir cualquier método (GET, POST, etc.)
+                  .AllowAnyHeader(); // Permitir cualquier header
+        });
+});
+
 
 builder.Services.AddControllers();
 
@@ -91,6 +109,8 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontend"); // Aplicar la política de CORS
 
 app.UseAuthentication();
 app.UseAuthorization();

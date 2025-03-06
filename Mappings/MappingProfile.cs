@@ -15,6 +15,12 @@ public class MappingProfile : Profile
         // Mapeo de Institucion
         CreateMap<Institucion, InstitucionDto>().ReverseMap();
 
+        // Mapeo de Oportunidad
+        CreateMap<Oportunidad, OportunidadDto>().ReverseMap();
+
+        // Mapeo de Tipod Oportunidad
+        CreateMap<TipoOportunidad, TipoOportunidadDto>().ReverseMap();
+
     }
 }
 

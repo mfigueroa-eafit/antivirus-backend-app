@@ -1,7 +1,6 @@
 namespace Antivirus.Repositories;
 
 using Antivirus.Models;
-using Antivirus.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Collections.Generic;

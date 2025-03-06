@@ -7,7 +7,7 @@ public class Oportunidad {
     public required string Nombre { get; set; } 
     public required string Descripcion { get; set; } 
     public int TipoOportunidadId { get; set; } 
-    public required TipoOportunidad TipoOportunidad { get; set; } 
+    public required TipoOportunidad? TipoOportunidad { get; set; } 
     public ICollection<OportunidadInstitucion>? OportunidadesInstitucion { get; set; } 
     public ICollection<UsuarioOportunidad>? UsuariosOportunidades { get; set; } 
 } 

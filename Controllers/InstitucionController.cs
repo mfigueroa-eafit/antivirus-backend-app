@@ -1,15 +1,8 @@
-
-
-
 namespace Antivirus.Controllers;
 
 using Microsoft.AspNetCore.Mvc;
 using Antivirus.Services;
-using System.Security.Cryptography;
-using System.Text;
 using Antivirus.Dtos;
-using Antivirus.Mappers;
-using Antivirus.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
