@@ -36,10 +36,10 @@ namespace Antivirus.Controllers
             return Ok(new { message = "Usuario registrado" });
         }
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UsuarioDto usuarioDto)
+        public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            var existingUser = _context.Usuarios.FirstOrDefault(u => u.Correo == usuarioDto.Correo);
-            if (existingUser == null || existingUser.Password != Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(usuarioDto.Password))))
+            var existingUser = _context.Usuarios.FirstOrDefault(u => u.Correo == loginDto.Correo);
+            if (existingUser == null || existingUser.Password != Convert.ToBase64String(SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password))))
             {
                 return Unauthorized();
             }

@@ -23,6 +23,8 @@ public class OportunidadService : IOportunidadService {
             Id = o.Id,
             Nombre = o.Nombre,
             Descripcion = o.Descripcion,
+            Logo = o.Logo,
+            Url = o.Url,
             TipoOportunidadId = o.TipoOportunidadId
         });
 
@@ -32,6 +34,8 @@ public class OportunidadService : IOportunidadService {
             Id = oportunidad.Id,
             Nombre = oportunidad.Nombre,
             Descripcion = oportunidad.Descripcion,
+            Logo = oportunidad.Logo,
+            Url = oportunidad.Url,
             TipoOportunidadId = oportunidad.TipoOportunidadId
         };
     }
@@ -40,6 +44,8 @@ public class OportunidadService : IOportunidadService {
         var oportunidad = new Oportunidad {
             Nombre = oportunidadDto.Nombre,
             Descripcion = oportunidadDto.Descripcion,
+            Logo = oportunidadDto.Logo,
+            Url = oportunidadDto.Url,
             TipoOportunidad = await _tipoOportunidadRepository.GetByIdAsync(oportunidadDto.TipoOportunidadId),
             TipoOportunidadId = oportunidadDto.TipoOportunidadId
         };
@@ -51,6 +57,8 @@ public class OportunidadService : IOportunidadService {
         if (oportunidad != null) {
             oportunidad.Nombre = oportunidadDto.Nombre;
             oportunidad.Descripcion = oportunidadDto.Descripcion;
+            oportunidad.Logo = oportunidadDto.Logo;
+            oportunidad.Url = oportunidadDto.Url;
             oportunidad.TipoOportunidadId = oportunidadDto.TipoOportunidadId;
             await _repository.UpdateAsync(oportunidad);
         }
