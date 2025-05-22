@@ -42,11 +42,15 @@ jobs:
         run: |
           sudo apt update && sudo apt install -y openvpn
           sudo openvpn --config vpn-config.ovpn --daemon
+          echo "Esperando a que se establezca la conexión VPN..."
+          sleep 20
+          echo "IP pública tras VPN:"
+          curl ifconfig.me
 
 
       - name: Run Entity Framework Migrations
         env:
-          CONNECTION_STRING: "Server=antivirus-backend-server.postgres.database.azure.com;Database=nombre_de_tu_base;Port=5432;User Id=slgwgvtzu;Password=${{ secrets.DB_PASSWORD }};Ssl Mode=Require;Trust Server Certificate=true"
+          CONNECTION_STRING: "Server=antivirus-db.cvkm6gqukms4.us-east-2.rds.amazonaws.com;Database=antivirus;Port=5432;User Id=postgres;Password=${{ secrets.DB_PASSWORD }};Ssl Mode=Require;Trust Server Certificate=true"
         run: |
           dotnet tool install --global dotnet-ef
           dotnet ef database update --connection "$env:CONNECTION_STRING"
