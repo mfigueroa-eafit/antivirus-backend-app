@@ -8,4 +8,6 @@ public class OportunidadDto {
 
     public required string Url { get; set; }
     public int TipoOportunidadId { get; set; }
+
+     public int SectorId { get; set; }
 }

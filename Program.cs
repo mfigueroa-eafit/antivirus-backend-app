@@ -84,6 +84,10 @@ builder.Services.AddScoped<IOportunidadService, OportunidadService>();
 builder.Services.AddScoped<ITipoOportunidadRepository, TipoOportunidadRepository>();
 builder.Services.AddScoped<ITipoOportunidadService, TipoOportunidadService>();
 
+// Sectores
+builder.Services.AddScoped<ISectorRepository, SectorRepository>();
+builder.Services.AddScoped<ISectorService, SectorService>();
+
 
 // Configurar EF Core con PostgreSQL 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

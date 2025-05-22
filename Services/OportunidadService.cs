@@ -13,9 +13,12 @@ public class OportunidadService : IOportunidadService {
 
     private readonly ITipoOportunidadRepository _tipoOportunidadRepository;
 
-    public OportunidadService(IOportunidadRepository repository, ITipoOportunidadRepository tipoOportunidadRepository) {
+    private readonly ISectorRepository _sectorRepository;
+
+    public OportunidadService(IOportunidadRepository repository, ITipoOportunidadRepository tipoOportunidadRepository, ISectorRepository sectorRepository) {
         _repository = repository;
         _tipoOportunidadRepository = tipoOportunidadRepository;
+        _sectorRepository = sectorRepository;
     }
 
     public async Task<IEnumerable<OportunidadDto>> GetAllAsync() =>
@@ -47,7 +50,9 @@ public class OportunidadService : IOportunidadService {
             Logo = oportunidadDto.Logo,
             Url = oportunidadDto.Url,
             TipoOportunidad = await _tipoOportunidadRepository.GetByIdAsync(oportunidadDto.TipoOportunidadId),
-            TipoOportunidadId = oportunidadDto.TipoOportunidadId
+            TipoOportunidadId = oportunidadDto.TipoOportunidadId,
+            Sector = await _sectorRepository.GetByIdAsync(oportunidadDto.SectorId),
+            SectorId = oportunidadDto.SectorId
         };
         await _repository.AddAsync(oportunidad);
     }

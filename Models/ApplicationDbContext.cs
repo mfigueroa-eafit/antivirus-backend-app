@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<TipoOportunidad> TipoOportunidades { get; set; }
     public DbSet<Usuario> Usuarios { get; set; }
     public DbSet<UsuarioOportunidad> UsuariosOportunidades { get; set; }
+    public DbSet<Sector> Sectores { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -43,6 +44,9 @@ public class ApplicationDbContext : DbContext
 
         //Usuario Oportunidad 
         modelBuilder.ApplyConfiguration(new UsuarioOportunidadConfiguration());
+
+        //Sector
+        modelBuilder.ApplyConfiguration(new SectorConfiguration());
 
     }
 
