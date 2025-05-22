@@ -40,7 +40,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Product API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Antivirus API", Version = "v1" });
 
     // Configurar autenticación con JWT en Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
