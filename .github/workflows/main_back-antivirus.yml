@@ -39,11 +39,20 @@ jobs:
       - name: Create ZIP package
         run: zip -r app.zip ./publish
 
-      - name: Upload artifact for deployment job
+      - name: Download ZIP artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-zip
+          path: ./app-zip
+
+      - name: Move ZIP to root
+        run: mv ./app-zip/app.zip ./app.zip
+
+      - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-zip
-          path: app.zip
+          path: ./app.zip
 
   deploy:
     runs-on: ubuntu-latest
