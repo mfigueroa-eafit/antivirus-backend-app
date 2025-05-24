@@ -39,9 +39,11 @@ jobs:
       - name: Create ZIP package
         run: zip -r app.zip ./publish
 
+      - name: List publish output
+        run: ls -la ./publish
 
-      - name: Move ZIP to root
-        run: mv ./app-zip/app.zip ./app.zip
+      - name: List current dir before upload
+        run: ls -la
 
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
