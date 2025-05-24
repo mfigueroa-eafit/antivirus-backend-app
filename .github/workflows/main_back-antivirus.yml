@@ -39,12 +39,6 @@ jobs:
       - name: Create ZIP package
         run: zip -r app.zip ./publish
 
-      - name: List publish output
-        run: ls -la ./publish
-
-      - name: List current dir before upload
-        run: ls -la
-
       - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
@@ -75,6 +69,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_29966591041C4557ACAF707A3AF0668A }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2A3FF88D9E3E456E991D5C572EC36E6D }}
 
+      - name: List current dir before upload
+        run: ls -la
+      
       - name: Deploy to Azure Web App
         run: |
           az webapp deploy \
