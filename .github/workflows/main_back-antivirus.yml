@@ -39,11 +39,6 @@ jobs:
       - name: Create ZIP package
         run: zip -r app.zip ./publish
 
-      - name: Download ZIP artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-zip
-          path: ./app-zip
 
       - name: Move ZIP to root
         run: mv ./app-zip/app.zip ./app.zip
