@@ -80,5 +80,5 @@ jobs:
           az webapp deploy \
             --resource-group DefaultResourceGroup-MXC \
             --name back-antivirus \
-            --src-path app.zip \
+            --src-path ./app.zip \
             --type zip
