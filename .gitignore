@@ -66,4 +66,5 @@ Dockerfile
 
 # lib
 wwwroot/lib/*
+publish/*
 

@@ -30,14 +30,20 @@ jobs:
       - name: Build project
         run: dotnet build --configuration Release --no-restore
 
+      - name: Clean publish directory
+        run: rm -rf ./publish
+
       - name: Publish project
         run: dotnet publish -c Release -o ./publish
+
+      - name: Create ZIP package
+        run: zip -r app.zip ./publish
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: ./publish
+          name: app-zip
+          path: app.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,8 +59,8 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-          path: ./publish
+          name: app-zip
+          path: .h
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,9 +70,9 @@ jobs:
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_2A3FF88D9E3E456E991D5C572EC36E6D }}
 
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: 'back-antivirus'
-          slot-name: 'Production'
-          package: ./publish
+        run: |
+          az webapp deploy \
+            --resource-group DefaultResourceGroup-MXC \
+            --name back-antivirus \
+            --src-path app.zip \
+            --type zip
